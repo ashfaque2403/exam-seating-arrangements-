@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+  table {
+      border-collapse: collapse;
+      width: 100%;
+  }
+  th, td {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+  }
+  th {
+      background-color: #f2f2f2;
+  }
+</style>
+<div class="container my-4">
+<table>
+    <thead>
+      <tr>
+        <th>Exam Date</th>
+        <th>Action</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in examing %}
+      <tr>
+          <td>
+              <a href="{% url 'exam_list' item.id %}">{{ item }}</a>
+              {% if item.is_new %}
+              <span class="badge badge-success">New</span>
+              {% endif %}
+          </td>
+          <td><a href="{% url 'pdf' item.id %}">Download PDF</a></td>
+          <td><a href="{% url 'delete_pdf' item.id %}">Delete</a></td>
+      </tr>
+      {% endfor %}
+      
+      
+      <style>
+        .badge {
+            display: inline-block;
+            padding: 0.25em 0.4em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+            background-color: green;
+            color: white;
+            margin-left: 10px; /* space out the badge from the text */
+        }
+        </style>
+        
+    </tbody>
+  </table>
+  
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      // Select all rows marked as new
+      const newItems = document.querySelectorAll('.new-item');
+      newItems.forEach(item => {
+          // Create a badge element
+          const badge = document.createElement('span');
+          badge.textContent = 'New'; // Set the text for the badge
+          badge.classList.add('badge', 'badge-success'); // Add Bootstrap badge classes for styling
+  
+          // Append the badge to the first cell in the row
+          item.cells[0].appendChild(badge);
+      });
+  });
+  </script>
+  
+
+
+{% endblock content %}

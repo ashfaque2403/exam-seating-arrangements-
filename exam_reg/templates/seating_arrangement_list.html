@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seating Arrangements</title>
+</head>
+<body>
+    <h1>Seating Arrangements</h1>
+    <ul>
+        {% for seating_arrangement in seating_arrangements %}
+            <li>Exam Hall: {{ seating_arrangement.exam_hall }} - Student: {{ seating_arrangement.student }} - Row: {{ seating_arrangement.row }} - Column: {{ seating_arrangement.column }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

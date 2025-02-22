@@ -1,0 +1,27 @@
+<!-- templates/your_app_name/selected_subjects.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selected Subjects</title>
+    <style>
+        /* Your CSS styles here */
+    </style>
+</head>
+<body>
+
+<div class="container">
+    {% if selected_subjects %}
+        <h2>Selected Subjects</h2>
+        {% for subject in selected_subjects %}
+            <p>{{ subject }}</p>
+        {% endfor %}
+    {% else %}
+        <p>No subjects selected</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

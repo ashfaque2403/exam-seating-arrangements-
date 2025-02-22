@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<section id="create-student" class="contact">
+    <div class="container" data-aos="fade-up">
+        <div class="row gx-lg-0 gy-4 d-flex justify-content-center">
+            <div class="col-lg-5">
+                <form method="post" class="php-email-form">
+                    <h2 class="section-header">Add Exam Hall</h2>
+                    {% csrf_token %}
+                    {% include "messages.html" %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock content %}
+
+
+

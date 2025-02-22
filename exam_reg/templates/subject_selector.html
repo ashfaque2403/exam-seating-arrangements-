@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+{% load static %}
+
+    {% block content  %}
+
+
+    <div class="container custom-container my-5 form-group custom-form-group w-75" data-aos="fade-up">
+        {% comment %} <h1 class="text-center mb-4">Subject and Student Selection</h1> {% endcomment %}
+        <div class="section-header mb-4">
+            <h1>Select Rows and Columns for
+                <span style="font-size:44px;"> Semester {{ selected_semester }}</span>
+            </h1>
+        </div>
+        <form id="subjectForm" class="mx-auto" onsubmit="showSelectedSubjects(event); return false;">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="rows">Select Rows:</label>
+                    <select class="form-control" id="rows">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="columns">Select Columns:</label>
+                    <select class="form-control" id="columns">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="hall_name">Exam Hall Name:</label>
+                <ul id="tagList" class="d-flex flex-wrap gap-2" style="list-style:none; overflow-x: auto; padding-inline-start: 0;">
+                    {% for hall in halls %}
+                    <li style="background-color:#008374; border-radius: 10px 4px 10px 4px; cursor:pointer; padding: 4px;" class="text-light" onclick="addTag('{{ hall.name }}')">{{ hall.name }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="mb-3">
+                <input class="form-control" type="text" id="hall_name" name="hall_name" placeholder="Enter exam hall name" readonly required>
+            </div>
+            
+            <div class="text-center mb-4">
+                <button id="get-started" class="custom-button" type="button" onclick="generateForm()">Generate Form</button>
+            </div>
+        </form>
+    
+        <div id="formData"></div>
+        <div class="selected-info" id="selectedInfo"></div>
+    </div>
+  
+<script>
+
+    
+    var selectedStudents = {};
+
+    function generateForm() {
+        var rows = parseInt(document.getElementById("rows").value);
+        var columns = parseInt(document.getElementById("columns").value);
+        var hallName = document.getElementById("hall_name").value;
+        var formData = document.getElementById("formData");
+    
+        if (!hallName) {
+            alert('Please enter the exam hall name.');
+            return; // Stop the form generation if no hall name is entered
+        }
+    
+        if (!formData) {
+            alert('Error: Could not find the form data element.');
+            return; // Early exit if formData element is missing
+        }
+    
+        var formHTML = "<br><h2>Enter Data for Each Row and Column</h2><br><form id='dataForm'>";
+    
+        // Iterate over columns first
+        for (var j = 0; j < columns; j++) {
+            for (var i = 0; i < rows; i++) {
+                var cellId = "cell" + i + "_" + j;
+                formHTML += "<div id='" + cellId + "'><label for='row" + i + "col" + j + "'>Row " + (i + 1) + " - Column " + (j + 1) + ":</label>";
+                formHTML += "<input class='form-control mb-4' type='text' id='row" + i + "col" + j + "' name='row" + i + "col" + j + "' placeholder='Enter subject' readonly required>";
+                formHTML += "<input class='form-control' type='text' id='row" + i + "col" + j + "_roll' name='row" + i + "col" + j + "_roll' placeholder='Enter Roll Number' required pattern='[0-9]+' title='Please enter a valid roll number (digits only)' readonly>";
+                formHTML += "<br><ul class='d-flex flex-wrap gap-2' style='list-style:none; overflow-x: auto; padding-inline-start: 0;' id='valueList" + i + "_" + j + "'>";
+    
+                {% for student in student_list %}
+                formHTML += "<li id='student_" + i + "_" + j + "_{{ student.id }}' style='background-color:#008374; border-radius: 10px 0 10px 0; cursor:pointer; padding: 4px; color:#fff' onclick='setValue(" + i + ", " + j + ", \"{{ student.id }}\", \"{{ student.roll_number }}\", \"{{ student.department }}\")'>{{ student.roll_number }} - {{ student.department }}</li>";
+                {% endfor %}
+    
+                formHTML += "</ul></div>";
+            }
+            formHTML += "<br>";
+        }
+    
+        formHTML += "<input type='hidden' id='hall_name' name='hall_name' value='" + hallName + "'>";
+        formHTML += "<button id='get-started' class='custom-button' type='button' onclick='saveDataToDatabase()'>Save Data</button>";
+        formHTML += "</form>";
+        formData.innerHTML = formHTML;
+    }
+    
+
+    function setValue(i, j, studentId, rollNumber, department) {
+        var inputId = 'row' + i + 'col' + j;
+        var liId = 'student_' + i + '_' + j + '_' + studentId;
+    
+        // Hide the selected student from all dropdowns
+        var allStudentEls = document.querySelectorAll("[id^='student_'][id$='_" + studentId + "']");
+        allStudentEls.forEach(el => el.style.display = 'none');
+    
+        // Remove previous selections if any
+        if (selectedStudents[inputId] && selectedStudents[inputId] !== studentId) {
+            var prevStudentEls = document.querySelectorAll("[id^='student_'][id$='_" + selectedStudents[inputId] + "']");
+            prevStudentEls.forEach(el => el.style.display = 'block'); // Show the previously selected student in all lists
+        }
+    
+        // Toggle current selection
+        if (selectedStudents[inputId] === studentId) {
+            document.getElementById(inputId).value = "";
+            document.getElementById(inputId + '_roll').value = "";
+            allStudentEls.forEach(el => el.style.display = 'block'); // Re-show this student in all lists
+            delete selectedStudents[inputId];
+        } else {
+            document.getElementById(inputId).value = department;
+            document.getElementById(inputId + '_roll').value = rollNumber;
+            selectedStudents[inputId] = studentId;
+        }
+    }
+
+    
+    function saveDataToDatabase() {
+        var formData = new FormData(document.getElementById("dataForm"));
+        var rows = document.getElementById("rows").value;
+        var columns = document.getElementById("columns").value;
+    
+        formData.append('rows', rows);
+        formData.append('columns', columns);
+
+        if (!rows || !columns) {
+        alert('Please fill in all required fields.');
+        return; // Stop the function if required fields are not filled
+        }
+        fetch('/save-data/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',  // Ensure this header is set
+                'X-CSRFToken': getCookie('csrftoken')  // CSRF token for Django
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message); // Display success message
+                window.location.href = '/exam_list_all/';  // Redirect
+            } else if (data.error) {
+                alert(data.error); // Display error message
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+</script>
+<style>
+    .custom-container {
+        background-color: #fafafa; /* Set your desired background color */
+        padding: 20px; /* Adjust padding as needed */
+        border-radius: 10px; /* Add border radius for rounded corners */
+    }
+
+    .custom-form-group {
+        text-align: center; /* Center align the form */
+    }
+
+    .custom-form-control {
+        width: 100%; /* Make form controls fill the width */
+    }
+
+    .custom-selected-info {
+        margin-top: 20px; /* Add margin to the selected info */
+    }
+
+    #get-started {
+        font-family: var(--font-primary);
+        font-weight: 500;
+        font-size: 15px;
+        letter-spacing: 1px;
+        display: inline-block;
+        padding: 14px 40px;
+        border-radius: 50px;
+        transition: 0.3s;
+        color: #FFF;
+        background-color: #008374;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        margin-top: 10px; /* Add margin to the button */
+    }
+
+    .custom-tag-list {
+        padding-left: 0; /* Remove default padding from unordered list */
+    }
+
+    .custom-tag-list li {
+        background-color: #008374;
+        border-radius: 50px;
+        cursor: pointer;
+        padding: 4px;
+        color: #FFF;
+    }
+
+    .custom-tag-list li:hover {
+        background-color: #005a52; /* Change background color on hover */
+    }
+
+    .custom-tag-list li:not(:last-child) {
+        margin-right: 5px; /* Add margin between list items */
+    }
+    
+</style>
+
+
+<script>
+    function addTag(tag) {
+        document.getElementById("hall_name").value = tag;
+    }
+</script>
+
+
+
+{% endblock content  %}
+
+

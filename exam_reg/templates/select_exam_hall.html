@@ -1,0 +1,16 @@
+<!-- templates/select_exam_hall.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Exam Hall</title>
+</head>
+<body>
+    <h1>Select Exam Hall</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

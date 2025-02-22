@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+<section id="create-student" class="contact">
+    <div class="container" data-aos="fade-up">
+        <div class="row gx-lg-0 gy-4 d-flex justify-content-center">
+            <div class="col-lg-5">
+                
+                <form method="post"  class="php-email-form">
+                    <h2 class="section-header">Login</h2>
+                    {% csrf_token %}
+                    {% include "messages.html" %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="name" name="username" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="department" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="department" name="password">
+                    </div>
+                    
+                    <center><button type="submit" class="btn btn-primary">Login</button></center>
+                    <br>
+                    <br>
+                    <center><span>Create Account!<a href="{% url "register" %}">Register</a></span></center>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+        {% endblock content %}

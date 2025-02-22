@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<section id="contact" class="contact">
+    <div class="container" data-aos="fade-up">
+        
+        <div class="row gx-lg-0 gy-4 d-flex justify-content-center">
+            <div class="col-lg-5">
+                <!-- alot.html -->
+<form id="examAllotmentForm" method="post" role="form" class="php-email-form">
+    <div class="section-header">
+        <h2>Generate Seat</h2>
+    </div>
+    {% csrf_token %}
+    {% include "messages.html" %}
+    <div class="mb-3 form-group">
+                        
+        <label for="semester" class="form-label">Semester</label>
+            <select  name="semester" class="form-control" id="semester" required>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+            </select>
+    </div>
+    <div class="form-group mt-3">
+        <input type="date" class="form-control" name="exam_date" id="exam_date" placeholder="Exam Date" required>
+    </div>
+    <div class="form-group mt-3">
+        <input type="time" class="form-control" name="exam_time" id="exam_time" placeholder="Exam Time" required>
+    </div>
+    <div class="form-group d-flex flex-column gap-2 mt-3">
+        <label>Select Halls:</label><span>Select All press ("Ctrl + A")</span><br>
+        <select name="hall_option" id="hall_option" required style="width:300px; height:100px;" class="form-control" multiple>
+            {% for hall in distinct_exam_halls %}
+                <option value="{{ hall.name }}">{{ hall.name }}</option>
+            {% endfor %}
+        </select>
+        
+        
+    </div>
+    <div class="text-center"><button type="submit">Allot Exam</button></div>
+</form>
+
+            </div><!-- End Contact Form -->
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('examAllotmentForm');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            fetch('{% url "exam_list_all" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else if (data.success) {
+                    alert(data.success);
+                    window.location.href = "{% url 'exam_list_alls' %}";
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+    
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    </script>
+    
+
+
+
+{% endblock content %}
+
+

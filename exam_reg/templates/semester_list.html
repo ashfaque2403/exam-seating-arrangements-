@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semester List</title>
+</head>
+<body>
+    <h1>Semesters</h1>
+    <ul>
+        {% for semester in semesters %}
+            <li>{{ semester.name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

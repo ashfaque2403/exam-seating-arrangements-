@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+<section id="create-student" class="contact">
+    <div class="container" data-aos="fade-up">
+        <div class="row gx-lg-0 gy-4 d-flex justify-content-center">
+            <div class="col-lg-5">
+                <form method="post" action="{% url 'create_student' %}" class="php-email-form">
+                    <h2 class="section-header">Add Student Details</h2>
+                    {% csrf_token %}
+                    {% include "messages.html" %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        
+                        <label for="semester" class="form-label">Semester</label>
+                            <select  name="semester" class="form-control" id="semester" required>
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                                <option value="3">Semester 3</option>
+                                <option value="4">Semester 4</option>
+                                <option value="5">Semester 5</option>
+                                <option value="6">Semester 6</option>
+                            </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="department" class="form-label">Department:</label>
+                        <input type="text" class="form-control" id="department" name="department">
+                    </div>
+                    <div class="mb-3">
+                        <label for="roll_number" class="form-label">Roll Number:</label>
+                        <input type="text" class="form-control" id="roll_number" name="roll_number" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    {% comment %} <a href="{% url "semester_view" %}">Click</a> {% endcomment %}
+</section>
+
+
+
+
+        {% endblock content %}

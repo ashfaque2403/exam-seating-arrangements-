@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<body>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+<div class="container">
+    <div class="section-header mt-5">
+        <h2>Saved Data</h2>
+    </div>
+
+    {% for exam_hall_name, grouped_rows in exam_halls_dict.items %}
+    <h2>{{ exam_hall_name }}</h2>
+    {% for rows_with_same_row_number in grouped_rows %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Row Number</th>
+                    <th>Column Number</th>
+                    <th>Subject Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data_row in rows_with_same_row_number %}
+                    <tr>
+                        <td>{{ data_row.row_number }}</td>
+                        <td>{{ data_row.column_number }}</td>
+                        <td>{{ data_row.subject_name }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+    {% endfor %}
+{% endfor %}
+
+
+
+
+</div>
+{% endblock content %}

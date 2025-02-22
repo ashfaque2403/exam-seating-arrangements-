@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+    </head>
+    <body>
+        <style>
+            
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            
+        </style>
+        <div class="container my-5">
+            
+            {% for exam_hall, rows in exam_halls_dict.items %}
+            <br>
+            <center>
+                <div>
+                    <h2>Exam Hall: {{ exam_hall }}</h2>
+                    <p>Examination for {{ semester }} Semester - 2024</p> 
+                </div>
+            </center>
+            <br>
+            
+            <table border="">
+                <tr>
+                    <th>No</th>
+                    <th>Subject</th>
+                    <th>Row Number</th>
+                    <th>Column Number</th>
+                    <th>Roll Number</th>
+                </tr>
+                {% for row_group in rows %}
+                    {% for row in row_group %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ row.subject_name }}</td>
+                        <td>{{ row.row_number }}</td>
+                        <td>{{ row.column_number }}</td>
+                        <td>{{ row.roll_number }}</td>
+                        
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            </table>
+
+
+            {% endfor %}
+            {% comment %} <a href="{% url 'pdf' exam_id %}" class="btn btn-success mt-4 " style="position:relative; left:45%;">Download PDF</a> {% endcomment %}
+
+
+        </div>
+    </body>
+</html>
+        
+        
+        
